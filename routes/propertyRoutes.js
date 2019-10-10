@@ -4,6 +4,17 @@ const authController = require('./../controllers/authController');
 const reviewRouter = require('./../routes/reviewRoutes');
  
 const router = express.Router();
+
+router
+  //Alias route i.e a route that is often used and therefore the queries can be hardcoded
+  //This route is for properties without location
+  .route('/top-properties')
+  .get(propertyController.bestProperties, propertyController.allProperties);
+
+router
+  .route('/propertiesbytown/:townone?/:towntwo?/:townthree?/:townfour?/:townfive?')
+  .get(propertyController.propertiesByTown);
+
 //Middleware only runs if param id exists // val contains the param value
 // router.param('id', checkID);
 
@@ -14,7 +25,7 @@ router.use('/:propertyId/reviews', reviewRouter);
 
 // Get all properties within latitude and lagitude (center) given a distance in radius
 router
-  .route('/within/:distance/center/:latlng/unit/:unit')
+  .route('/type/:type/within/:distance/center/:latlng/unit/:unit')
   .get(propertyController.propertiesWithin);
 
 // Get distances of properties from lat lng (center) 
@@ -24,23 +35,27 @@ router
   .get(propertyController.getDistances);
 
 router
-  //Alias route i.e a route that is often used and therefore the queries can be hardcoded
-  .route('/top-properties')
-  .get(propertyController.bestProperties, propertyController.allProperties);
-
-router
   .route('/')
   .get(propertyController.allProperties)
-  .post(authController.isAuthenticated, authController.restrictTo('admin'),propertyController.newProperty);
+  .post(propertyController.newProperty);
+  //authController.isAuthenticated, 
+  //authController.restrictTo('admin'),
+
+  //Update document fields
+router
+.route('/updateall')
+.post(authController.isAuthenticated, 
+      authController.restrictTo('admin'),
+      propertyController.updateAllProperties);
  
 router
   .route('/:id')
   .get(propertyController.property)
   .patch(
-    authController.isAuthenticated, 
-    authController.restrictTo('admin'),
-    propertyController.uploadPropertyImages, 
-    propertyController.resizePropertyImages,
+    // authController.isAuthenticated, 
+    // authController.restrictTo('admin'),
+    // propertyController.uploadPropertyImages, 
+    // propertyController.resizePropertyImages,
     propertyController.updateProperty)
   .delete(authController.isAuthenticated, 
           authController.restrictTo('admin'), 

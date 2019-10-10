@@ -78,5 +78,15 @@ exports.getADoc = (Model, popOptions) => catchAsync(async (req, res, next) => {
   res.status(201).json({
     status: 'success', 
     document
+  });
 });
+
+exports.updateAll = Model => catchAsync(async (req, res, next) => {
+
+  await Model.update({}, { $rename: { rent: 'price' } }, { multi: true });
+  res.status(201).json({
+    status: 'success',
+    message: "Document fields updated successfuly!"
+  });
+
 });

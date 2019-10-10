@@ -63,13 +63,13 @@ reviewSchema.statics.calcAverageRatings = async function(propertyId){
       ratingsAverage: stats[0].avgRating.toFixed(1), 
       ratingsQuantity: stats[0].nRatings
     });
+    //Default case
   }else {
     await Property.findByIdAndUpdate(propertyId, {
       ratingsAverage: 4.5, 
       ratingsQuantity: 0
     });
   }
-
 }
 
 //calculate reviews average and update property upon creation of a new review

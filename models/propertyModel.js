@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 // const Company = require('./companyModel');
 const propertySchema = new mongoose.Schema({
 
-  rent: { type: Number, required: [true, 'Property rent is required']},
+  price: { type: Number, required: [true, 'Property rent is required']},
   bedrooms: { type: Number, required: [true, 'Number of bedrooms required']},
   propertyType: { type: String, required: [true, 'Property type in required'],enum: ['Flat', 'House', 'Bungalow', 'Commercial', 'Studio', 'Annex']},
   address: { type: String,  required: [true, 'Property address is required'], unique: true },
@@ -42,15 +42,21 @@ const propertySchema = new mongoose.Schema({
     type: String, 
     required: [true, 'A property must have a cover image']
   }, 
-  images: [String]
+  images: [String],
+  town: String
 }, 
 {
+  timestamps: {
+    createdAt: 'created_at', 
+    updatedAt: 'updated_at'
+  },
   toJSON: {virtuals: true}, 
   toObject: {virtuals: true}
 });
 
-propertySchema.index({rent: 1, bedrooms: 1});
+propertySchema.index({price: 1, bedrooms: 1});
 propertySchema.index({location: '2dsphere'});
+propertySchema.index({type: 1});
 
 // //Virtual properties -- Not saved in the database -- created on the fly when getting docs from collection
 // propertySchema.virtual('lettingDurationWeeks').get(function(){
