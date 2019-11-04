@@ -88,7 +88,6 @@ exports.deleteProperty = factory.deleteDoc(Property);
 
 exports.propertiesWithin = catchAsync(async(req, res, next) => {
   // PLEASE NOTE: Check to make sure property coordinates are saved as (lng,lat) and not (lat,lng) in the database.
-
   // 1) Get info of params
   const { distance, latlng, unit, type } = req.params;
   const [lat, lng] = latlng.split(',');
@@ -192,13 +191,46 @@ exports.getDistances = catchAsync(async(req, res, next) => {
 
 exports.propertiesByTown = catchAsync(async(req, res, next) => {
  
-  let { townone, towntwo, townthree, townfour, townfive } = req.params;
+  let { type, lat, lng, townone, towntwo, townthree, townfour, townfive, unit } = req.params;
   townone = townone ? townone : "";
   towntwo = towntwo ? towntwo : "";
   townthree = townthree ? townthree : "";
   townfour = townfour ? townfour : "";
   townfive = townfive ? townfive : "";
-  const properties = await Property.find({ town: { $in: [townone, towntwo, townthree, townfour, townfive] } })
+  console.log('====================================');
+  console.log(lat, lng);
+  console.log('====================================');
+  const multiplier = unit === 'mil' ? 0.000621371 : 0.001;
+  const { bedrooms, price, sort } = req.query;
+  // const properties = await Property.find({ town: { $in: [townone, towntwo, townthree, townfour, townfive] } });
+  const properties = await Property.aggregate([
+
+    {
+      //PLEASE NOTE: GeoNear must always be the first stage in the pipeline
+      $geoNear: {
+        near: {
+          type: 'Point', 
+          coordinates: [lng * 1, lat * 1]
+        },
+        distanceField: 'distance', 
+        distanceMultiplier: multiplier
+      }
+    }, 
+    {
+      $match: {
+        type,
+        bedrooms: { $gte: bedrooms.gte * 1, $lte: bedrooms.lte * 1}, 
+        price: {$gte: price.gte * 1 , $lte: price.lte * 1},
+        town: {$in: [townone, towntwo, townthree, townfour, townfive]}
+      }
+    }, 
+    {
+      $sort: {
+        price: sort * 1
+      }
+    }
+  ]);
+
   res.status(200).json({
     status: 'success', 
     documents: properties

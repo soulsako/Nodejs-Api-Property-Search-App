@@ -12,7 +12,7 @@ router
   .get(propertyController.bestProperties, propertyController.allProperties);
 
 router
-  .route('/propertiesbytown/:townone?/:towntwo?/:townthree?/:townfour?/:townfive?')
+  .route('/propertiesbytown/:type/:lat/:lng/:townone?/:towntwo?/:townthree?/:townfour?/:townfive?/unit/:unit')
   .get(propertyController.propertiesByTown);
 
 //Middleware only runs if param id exists // val contains the param value

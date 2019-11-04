@@ -8,12 +8,14 @@ const router = express.Router({ mergeParams: true });
 //Get request to /propeties/:propertyId/reviews
 //merge params will allow access to the params
 
-router.use(authController.isAuthenticated);
+// router.use(authController.isAuthenticated); => uncommment this
 
 router
 .route('/')
 .get(authController.restrictTo('admin'), reviewController.allReviews)
-.post(authController.restrictTo('user', 'admin'), reviewController.createReview);
+.post(reviewController.createReview);
+
+//authController.restrictTo('user', 'admin'), //Uncomment and insert above 
 
 router.use(authController.restrictTo('admin'));
 

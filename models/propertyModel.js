@@ -38,11 +38,12 @@ const propertySchema = new mongoose.Schema({
     type: Number, 
     default: 0
   }, 
-  imageCover: {
-    type: String, 
-    required: [true, 'A property must have a cover image']
-  }, 
-  images: [String],
+  images: [
+    {
+      title: String, 
+      image: String
+    }
+  ],
   town: String
 }, 
 {

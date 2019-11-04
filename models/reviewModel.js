@@ -47,12 +47,13 @@ reviewSchema.statics.calcAverageRatings = async function(propertyId){
   //Aggregate takes in an array of stages
   const stats = await this.aggregate([
     {
+      //all reviews that belong to this property id passed in 
       $match: {property: propertyId}
     }, 
     {
       $group: {
         _id: '$property', 
-        nRatings: {$sum: 1}, 
+        nRatings: {$sum: 1}, // number of reviews for this property 
         avgRating: {$avg: '$rating'}
       }
     }

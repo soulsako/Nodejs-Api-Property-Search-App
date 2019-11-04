@@ -11,9 +11,7 @@ const AppError = require('./utils/appError');
 const errorController = require('./controllers/errorController');
 //Third-party middlewares
 app.use(express.json());
-if(process.env.NODE_ENV === 'development'){
-  app.use(morgan('dev'));
-}
+if(process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 //Middleware to serve static files
 //app.use(express.static(pass directory path where the static files live))

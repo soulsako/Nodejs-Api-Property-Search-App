@@ -21,8 +21,8 @@ exports.allReviews = catchAsync(async (req, res, next) => {
 
 exports.review = factory.getADoc(Review);
 
-exports.addPropaAndUserId = (req, res, next) => {
-  //Allow nested routes
+exports.addPropertyAndUserId = (req, res, next) => {
+  //Allow nested routes - When a review is written for a property -request is made to :propertyId/reviews
   if(!req.body.property) req.body.property = req.params.propertyId;
   //We have access to user info because of isAuthenticated middleware 
   if(!req.body.user) req.body.user = req.user.id;
