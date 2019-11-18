@@ -22,7 +22,7 @@ exports.deleteDoc = Model => catchAsync( async (req, res, next) => {
     const doc = await Model.findByIdAndUpdate(id, req.body, {
       new: true, 
       runValidators: true
-    });
+    });3
   
     if(!doc){
       return next(new AppError('Error. No doc found with this id. Please check ID and try again', 404));
