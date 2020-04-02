@@ -15,17 +15,12 @@ if(process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 
 //Middleware to serve static files
 //app.use(express.static(pass directory path where the static files live))
-
-//Test middleware 
-// app.use((req, res, next) => {
-  
-//   next();
-// });
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 //Application middlewares
 app.use('/api/v1/properties', propertyRouter);
 app.use('/api/v1/users', userRouter);

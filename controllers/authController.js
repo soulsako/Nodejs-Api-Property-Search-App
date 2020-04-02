@@ -12,14 +12,17 @@ const _signToken = id => {
   });
 }
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, res, isNewUser) => {
   const token = _signToken(user._id);
+
   res.status(statusCode).json({
     status: 'success', 
     token, 
-    user
+    user,
+    newUser: isNewUser ? true : false
   });
 }
+  
 
 exports.signup = catchAsync(async (req, res, next) => {
 
@@ -57,6 +60,41 @@ exports.login = catchAsync( async (req, res, next) => {
   }
 
   createSendToken(user, 200, res);
+});
+
+exports.socialLogin = catchAsync(async (req, res, next) => {
+
+  const { name, email, photoUrl } = req.body;
+  // let firstName, lastName;
+  const [ firstName, lastName ] = name.split(' ');
+
+  //Create dummy password to fulfil model requirements
+  const password = 'Dummypassword123';
+
+  // 1) Check if name and email exists
+  if(!name && !email){
+    return next(new AppError('Please provide a name and an email', 400));
+  }else if(!name){
+    return next(new AppError('Please provide a name', 400));
+  }else if(!email){
+    return next(new AppError('Please provide an email', 400));
+  }
+
+  const user = await User.findOne({email});
+
+  // If user does not exist create a new one
+  if(!user) {
+    const createUser = await User.create({
+      firstName,
+      lastName, 
+      email, 
+      password, 
+      photo: photoUrl
+    });
+    createSendToken(createUser, 201, res, isNewUser = true);
+  }else {
+    createSendToken(user, 200, res);
+  }
 });
 
 exports.isAuthenticated = catchAsync(async (req, res, next) => {
